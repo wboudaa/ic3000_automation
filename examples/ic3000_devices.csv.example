@@ -1,0 +1,7 @@
+DeviceName,IPAddress,Username,Password,NTPServer
+IC3000-Site1,192.168.1.100,admin,your_password_here,"10.0.0.1, 10.0.0.2"
+IC3000-Site2,192.168.1.101,admin,your_password_here,10.0.0.1
+IC3000-Site3,192.168.1.102,admin,your_password_here,"pool.ntp.org, time.google.com"
+IC3000-Factory1,10.10.10.50,admin,your_password_here,192.168.254.1
+IC3000-Factory2,10.10.10.51,admin,your_password_here,192.168.254.1
+

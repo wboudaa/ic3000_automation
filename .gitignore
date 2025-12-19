@@ -1,0 +1,67 @@
+# Sensitive data - NEVER commit these!
+ic3000_devices.csv
+*_devices.csv
+*.csv
+!examples/*.example
+
+# Configuration files with real credentials
+ic3000_config.yaml
+!ic3000_config.yaml.example
+
+# Results and logs
+results/
+*.log
+*.txt
+
+# Firmware files (too large for git)
+*.SPA
+*.bin
+*.tar
+*.gz
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+

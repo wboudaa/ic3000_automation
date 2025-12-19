@@ -1,0 +1,110 @@
+# IC3000 Automation Toolkit Configuration
+# Copy this file to: ic3000_config.yaml and customize
+
+# ============================================================================
+# DEVICE INVENTORY
+# ============================================================================
+devices_csv: "ic3000_devices.csv"
+
+# ============================================================================
+# SOFTWARE/FIRMWARE SETTINGS
+# ============================================================================
+software:
+  # Path to firmware file for upgrades
+  firmware_path: "IC3000-K9-1.5.1.SPA"
+  
+  # Add other software-related settings here if needed
+  # verify_checksum: true
+  # backup_before_upgrade: true
+
+# ============================================================================
+# NTP CONFIGURATION
+# ============================================================================
+ntp:
+  # Default NTP server(s) if not specified in CSV
+  # Use comma-separated values for multiple servers
+  default_server: "pool.ntp.org"
+  
+  # Examples:
+  # default_server: "10.0.0.1"
+  # default_server: "10.0.0.1, 10.0.0.2, 10.0.0.3"
+  # default_server: "pool.ntp.org, time.google.com"
+
+# ============================================================================
+# PARALLEL PROCESSING AND BATCH SETTINGS
+# ============================================================================
+parallel:
+  # Process N devices per batch (prevents network overload)
+  batch_size: 5
+  
+  # Wait N seconds between batches
+  batch_delay: 60
+  
+  # Maximum parallel workers for NTP operations
+  # NTP is lightweight, can handle more parallel connections
+  max_workers_ntp: 10
+  
+  # Maximum parallel workers for firmware upgrades
+  # Upgrades involve large file transfers, use fewer workers
+  max_workers_upgrade: 3
+
+# ============================================================================
+# TIMEOUT SETTINGS (in seconds)
+# ============================================================================
+timeouts:
+  # Login/authentication timeout
+  login: 15
+  
+  # Standard API call timeout
+  api_call: 30
+  
+  # Firmware upload timeout (large files need more time)
+  upload: 300
+  
+  # Firmware installation initiation timeout
+  install: 60
+
+# ============================================================================
+# SAFETY FEATURES
+# ============================================================================
+safety:
+  # Require user confirmation before starting bulk operations
+  # Set to false to skip prompts (useful for automation/cron jobs)
+  require_confirmation: true
+  
+  # Prompt before starting each new batch
+  # Gives you a chance to stop if errors occur
+  prompt_between_batches: true
+  
+  # Default value for --test flag
+  test_mode_default: false
+
+# ============================================================================
+# REPORTING
+# ============================================================================
+reporting:
+  # Directory for saving CSV reports
+  output_dir: "results"
+  
+  # Include timestamps in filenames
+  timestamp_format: "%Y%m%d_%H%M%S"
+  
+  # Save detailed logs
+  save_logs: true
+
+# ============================================================================
+# ADVANCED SETTINGS
+# ============================================================================
+advanced:
+  # Retry failed operations
+  retry_count: 2
+  
+  # Delay between retries (seconds)
+  retry_delay: 5
+  
+  # SSL verification (IC3000 uses self-signed certs)
+  verify_ssl: false
+  
+  # Connection pool size
+  connection_pool_size: 10
+
