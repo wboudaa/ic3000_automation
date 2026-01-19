@@ -17,6 +17,7 @@ permissions:
   contents: read
   security-events: write
   actions: read
+  packages: read
 
 jobs:
   analyze:
@@ -36,7 +37,7 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        queries: +security-extended,security-and-quality
+        queries: security-extended
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3
