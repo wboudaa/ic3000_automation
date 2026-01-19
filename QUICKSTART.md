@@ -145,3 +145,5 @@ ls -lt results/ic3000_upgrade_*.csv | head -1 | xargs cat
 4. ✅ **Review results**: Check CSV reports after each run
 5. ✅ **Backup configs**: Document current settings before changes
 
+
+
