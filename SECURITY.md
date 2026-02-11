@@ -55,7 +55,7 @@ When using this tool:
 
 ### Network Security
 - Tool communicates with IC3000 devices over HTTPS (ports 8443, 8444)
-- Certificate validation is performed by default
+- IC3000 devices typically use self-signed certificates; the client disables TLS verification by default (`verify=False`). Use only in trusted, isolated networks. To enable certificate verification when devices use proper PKI, set environment variable `IC3000_VERIFY_SSL=true` (support can be added in a future release).
 - Ensure network path between automation host and IC3000 devices is secure
 
 ### Data Handling
