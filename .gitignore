@@ -12,6 +12,7 @@ ic3000_config.yaml
 results/
 *.log
 *.txt
+!requirements.txt
 
 # Firmware files (too large for git)
 *.SPA

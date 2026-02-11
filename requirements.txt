@@ -1,0 +1,6 @@
+# IC3000 Automation Toolkit - Python dependencies
+# Install: pip3 install -r requirements.txt
+
+requests>=2.25.0
+PyYAML>=5.4.0
+urllib3>=1.26.0
