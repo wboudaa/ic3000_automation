@@ -8,6 +8,7 @@ on:
     branches: [ "main" ]
   schedule:
     - cron: '0 6 * * 1'  # Mondays 06:00 UTC
+  workflow_dispatch:  # Manual run: Actions → OpenSSF Scorecard → Run workflow
 
 jobs:
   scorecard:
