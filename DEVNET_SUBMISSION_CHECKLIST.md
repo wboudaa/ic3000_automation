@@ -198,6 +198,8 @@ https://github.com/wboudaa/ic3000_automation/actions
 - [ ] Check Actions tab for successful runs
 - [ ] Review any security alerts
 - [ ] Check OpenSSF Scorecard: https://securityscorecards.dev/viewer/?uri=github.com/wboudaa/ic3000_automation
+- [ ] DevNet Code Exchange report (security score): https://developer.cisco.com/codeexchange/github/repo/wboudaa/ic3000_automation/report/
+- [ ] DevNet Code Exchange edit (metadata): https://developer.cisco.com/codeexchange/github/repo/wboudaa/ic3000_automation/edit/
 
 ### 5. Pre-Submission Review
 
@@ -244,12 +246,15 @@ Before submitting to DevNet, verify:
 ├── PULL_REQUEST_TEMPLATE.md
 └── workflows/
     ├── codeql-analysis.yml
-    └── python-tests.yml
+    ├── python-tests.yml   # Bandit, safety, syntax (CI-Tests + SAST)
+    ├── scorecard.yml      # OpenSSF Scorecard (publishes to Security tab)
+    └── status-check.yml
 
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 SECURITY.md
 DEVNET_SUBMISSION_CHECKLIST.md (this file)
+requirements.txt
 ```
 
 ### Modified Files:
@@ -295,6 +300,25 @@ Your repository is ready for DevNet submission when:
 - ✅ No sensitive data in repository
 - ✅ Community files present (CODE_OF_CONDUCT, CONTRIBUTING, SECURITY)
 - ✅ License is appropriate (Apache 2.0, MIT, or Cisco Sample Code)
+
+---
+
+## 🔐 If Security Score Is Still Low (DevNet)
+
+Cisco Code Exchange uses **OpenSSF Scorecard** (and optionally **KubeClarity** for SBOM). To see why the score is low:
+
+1. **View your report** (login with Cisco/DevNet):  
+   [Code Exchange report](https://developer.cisco.com/codeexchange/github/repo/wboudaa/ic3000_automation/report/)
+2. **Edit listing/metadata**:  
+   [Code Exchange edit](https://developer.cisco.com/codeexchange/github/repo/wboudaa/ic3000_automation/edit/)
+3. **OpenSSF Scorecard (public)**:  
+   [securityscorecards.dev](https://securityscorecards.dev/viewer/?uri=github.com/wboudaa/ic3000_automation)
+
+Common fixes:
+- **Branch protection**: Enable on `main` (Settings → Branches).
+- **CI / SAST**: Ensure `python-tests.yml` (Bandit, safety) and `codeql-analysis.yml` run and pass.
+- **Scorecard workflow**: The `scorecard.yml` workflow runs weekly and publishes results; re-submit or wait for the next run so DevNet sees updated scores.
+- **Dependencies**: Run `safety check -r requirements.txt` locally and fix any reported issues.
 
 ---
 
