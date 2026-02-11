@@ -2,9 +2,12 @@
 
 Scorecard only looks at the **default branch** of your GitHub repo. If your local `main` was never pushed to GitHub, or the default branch on GitHub is different, you get zeros. Follow these steps in order.
 
+**Quick path:** A branch `scorecard-fixes` with all needed files has been pushed. **Merge this PR** so that `main` gets SECURITY.md, dependabot, CodeQL, and CI workflows, then do Step 2 (and Step 3 if CI-Tests is still -1):
+→ **https://github.com/wboudaa/ic3000_automation/pull/new/scorecard-fixes**
+
 ---
 
-## Step 1: Push everything to GitHub default branch
+## Step 1: Push everything to GitHub default branch (or merge the PR above)
 
 1. **Check GitHub default branch**
    - Open: https://github.com/wboudaa/ic3000_automation
