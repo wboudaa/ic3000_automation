@@ -4,21 +4,31 @@ IC3000 REST API Client - Uses port 8444 REST API instead of web scraping
 Discovered via browser DevTools showing XHR requests on port 8444
 """
 
+import os
 import requests
 import urllib3
 import json
 import sys
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+def _default_timeout() -> int:
+    """Request timeout in seconds; use env IC3000_REQUEST_TIMEOUT for slow devices."""
+    try:
+        return int(os.environ.get("IC3000_REQUEST_TIMEOUT", "30"))
+    except ValueError:
+        return 30
+
 
 class IC3000APIClient:
     """REST API client for IC3000 devices"""
     
-    def __init__(self, ip: str, username: str, password: str):
+    def __init__(self, ip: str, username: str, password: str, timeout: Optional[int] = None):
         self.ip = ip
         self.username = username
         self.password = password
+        self.timeout = timeout if timeout is not None else _default_timeout()
         self.session = requests.Session()
         self.session.verify = False
         self.base_url = f"https://{ip}:8444"  # API port, not web UI port (8443)
@@ -51,14 +61,14 @@ class IC3000APIClient:
             login_response = self.session.post(
                 self.auth_url,  # https://IP:8443
                 data=login_payload,
-                timeout=15,
+                timeout=self.timeout,
                 allow_redirects=True
             )
             
             # Verify we can access admin page (validates session)
             admin_check = self.session.get(
                 f"{self.auth_url}/admin",
-                timeout=10
+                timeout=self.timeout
             )
             
             if admin_check.status_code != 200:
@@ -79,7 +89,7 @@ class IC3000APIClient:
                     "Content-Type": "application/x-www-form-urlencoded",
                     "X-Requested-With": "XMLHttpRequest"
                 },
-                timeout=15
+                timeout=self.timeout
             )
             
             if token_response.status_code != 200:
@@ -142,7 +152,7 @@ class IC3000APIClient:
                     "Origin": f"https://{self.ip}:8443",
                     "Referer": f"https://{self.ip}:8443/"
                 },
-                timeout=10
+                timeout=self.timeout
             )
             
             if test_response.status_code == 200:
@@ -168,7 +178,7 @@ class IC3000APIClient:
             # Try to access the NTP endpoint (actual discovered endpoint)
             response = self.session.get(
                 f"{self.base_url}/ntp",
-                timeout=5
+                timeout=min(10, self.timeout)
             )
             
             # Even if we get 401 (unauthorized), it means the API is there
@@ -204,14 +214,14 @@ class IC3000APIClient:
                     "Origin": f"https://{self.ip}:8443",
                     "Referer": f"https://{self.ip}:8443/"
                 },
-                timeout=10
+                timeout=self.timeout
             )
             
             if response.status_code == 200:
                 try:
                     config = response.json()
                     return True, config
-                except:
+                except Exception:
                     # If not JSON, return raw text
                     return True, response.text
             else:
@@ -265,7 +275,7 @@ class IC3000APIClient:
                     "Origin": f"https://{self.ip}:8443",
                     "Referer": f"https://{self.ip}:8443/"
                 },
-                timeout=15
+                timeout=self.timeout
             )
             
             if response.status_code in [200, 201, 204]:
@@ -307,15 +317,15 @@ class IC3000APIClient:
                         "Origin": f"https://{self.ip}:8443",
                         "Referer": f"https://{self.ip}:8443/"
                     },
-                    timeout=5
+                    timeout=self.timeout
                 )
                 
                 if response.status_code == 200:
                     try:
                         return True, response.json()
-                    except:
+                    except Exception:
                         return True, response.text
-            except:
+            except Exception:
                 continue
         
         return False, "Could not retrieve system info"
@@ -338,6 +348,9 @@ Examples:
   # Set NTP server
   python3 ic3000_api_client.py 192.168.69.142 admin password --set-ntp pool.ntp.org
   
+  # Slow device: use 60s timeout (or set IC3000_REQUEST_TIMEOUT=60)
+  python3 ic3000_api_client.py 192.168.69.142 admin password --set-ntp pool.ntp.org --timeout 60
+  
   # Get system information
   python3 ic3000_api_client.py 192.168.69.142 admin password --system-info
         """
@@ -346,6 +359,9 @@ Examples:
     parser.add_argument('ip', help='Device IP address')
     parser.add_argument('username', nargs='?', help='Username (if authentication required)')
     parser.add_argument('password', nargs='?', help='Password (if authentication required)')
+    
+    parser.add_argument('--timeout', type=int, default=None,
+                        help='Request timeout in seconds (default: 30 or IC3000_REQUEST_TIMEOUT). Use 60+ for slow devices.')
     
     parser.add_argument('--check', action='store_true',
                        help='Check if REST API is available on port 8444')
@@ -358,8 +374,13 @@ Examples:
     
     args = parser.parse_args()
     
-    # Create client
-    client = IC3000APIClient(args.ip, args.username or '', args.password or '')
+    # Create client (optional timeout for slow devices)
+    client = IC3000APIClient(
+        args.ip,
+        args.username or '',
+        args.password or '',
+        timeout=args.timeout
+    )
     
     print("="*70)
     print("IC3000 REST API CLIENT")
